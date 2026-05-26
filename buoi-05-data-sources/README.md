@@ -82,6 +82,12 @@ resource "aws_lambda_function" "app" {
 
 ## 🛠️ Các bước thực hành
 
+> ⚠️ **Cảnh báo về `default VPC`**:
+> Account AWS tạo từ tháng 12/2022 trở đi vẫn có default VPC. NHƯNG:
+> - Nếu admin của tổ chức đã **xoá default VPC** (best practice security), data source `data "aws_vpc.default"` ở Bước 1 sẽ fail với lỗi `default VPC not found`.
+> - Nếu gặp lỗi này, **xoá block `data "aws_vpc.default"`** trong `main.tf` và 2 output liên quan (`default_vpc_id`, `default_vpc_cidr`) — phần còn lại chạy bình thường.
+> - Buổi 10 sẽ tạo VPC riêng — không phụ thuộc default VPC nữa.
+
 ### Bước 1 — Init & Apply
 
 ```bash

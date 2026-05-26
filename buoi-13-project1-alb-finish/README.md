@@ -134,12 +134,24 @@ terraform apply
 ```
 
 ### Bước 4 — Test
+
+**Linux/macOS / Git Bash**:
 ```bash
 ALB_DNS=$(terraform output -raw alb_dns_name)
 curl http://$ALB_DNS
 # Lặp lại vài lần — sẽ thấy instance ID khác nhau (ALB round-robin)
 for i in {1..5}; do curl -s http://$ALB_DNS | grep -i "Hello"; done
 ```
+
+**Windows PowerShell**:
+```powershell
+$ALB_DNS = terraform output -raw alb_dns_name
+curl.exe http://$ALB_DNS    # dùng curl.exe để tránh alias Invoke-WebRequest
+# Lặp 5 lần
+1..5 | ForEach-Object { curl.exe -s http://$ALB_DNS | Select-String "Hello" }
+```
+
+> 💡 Có thể test EC2 → RDS từ Session Manager (đã setup ở B11): `mysql -h <db_endpoint> -u admin -p` (password lấy từ Secrets Manager) — chốt mạch B11 + B12 + B13.
 
 ### Bước 5 — Verify health check
 AWS Console → EC2 → Target Groups → chọn TG → Targets tab → trạng thái phải là **healthy**.

@@ -11,6 +11,8 @@
   ▲ bạn ở đây
 ```
 
+> ⚠️ **Lưu ý destroy**: Nếu sau B10 bạn đã `apply` thêm B11/B12/B13, ĐỪNG `destroy` ở B10 trước. Resource buổi sau ref VPC/subnet của B10 → destroy B10 sẽ FAIL với lỗi dependency (`DependencyViolation`). Phải destroy theo thứ tự **ngược**: B13 → B12 → B11 → B10. Xem chi tiết ở [Buổi 13](../buoi-13-project1-alb-finish/README.md#-sau-khi-hoàn-thành-b13--demo--destroy-theo-thứ-tự-ngược).
+
 **Kiến trúc đích cuối Project 1**:
 ```
 Internet ──► ALB (B13) ──► EC2 ASG (B11) ──► RDS MySQL (B12)

@@ -87,6 +87,9 @@ Trong workflow, thêm step debug 1 lần để xem:
     ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
 ```
 
+> 📌 **Hai biến `ACTIONS_ID_TOKEN_REQUEST_*` từ đâu ra?**
+> GitHub Actions **tự động inject** 2 biến này vào job khi workflow có `permissions: id-token: write`. Nếu thiếu permission đó, biến sẽ KHÔNG xuất hiện và lệnh debug fail. Đây cũng là lý do mọi job dùng OIDC phải khai báo `permissions: id-token: write` ở đầu.
+
 Output sẽ thấy claim `sub` thật (ví dụ `repo:lyduc/aws-iac-terraform-playbook:ref:refs/heads/main`). Hiểu được claim này, bạn viết được trust policy chuẩn.
 
 > 🔒 **Cảnh báo bảo mật về `pull_request`**: GitHub cho phép PR từ **fork** (người ngoài). Nếu trust policy match `repo:org/repo:pull_request`, **bất kỳ ai** mở PR đều assume được role → có thể chạy code độc trong workflow → đánh cắp credentials. Vì vậy với role `apply`, **TUYỆT ĐỐI không** match `pull_request`. Chỉ cho `plan` (read-only).
@@ -114,7 +117,7 @@ Token GitHub có claim `sub` ví dụ: `repo:my-org/my-repo:ref:refs/heads/main`
 | `repo:org/repo:*` | Mọi branch / tag / PR / environment của repo |
 | `repo:org/repo:ref:refs/heads/main` | Chỉ branch `main` |
 | `repo:org/repo:environment:production` | Chỉ workflow chạy với `environment: production` |
-| `repo:org/repo:pull_request` | Chỉ PR (đặc biệt — đề phòng PR từ fork) |
+| `repo:org/repo:pull_request` | **CHỈ DÙNG cho role plan read-only**. KHÔNG bao giờ cho role apply, vì PR từ fork (người ngoài) cũng match pattern này → có thể chạy code độc trong workflow nếu role có quyền write. |
 
 > 💡 **Production**: tách 2 role riêng — `deployer-dev` cho push main, `deployer-prod` cho `environment: production`. Buổi này dùng 1 role demo; phần Bonus dưới hướng dẫn tách.
 

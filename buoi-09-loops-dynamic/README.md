@@ -135,3 +135,7 @@ buoi-09-loops-dynamic/
 ├── outputs.tf
 └── versions.tf
 ```
+
+---
+
+➡️ **Buổi tiếp theo**: [Buổi 10 — Project 1: VPC Network Module](../buoi-10-project1-network/README.md)

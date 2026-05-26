@@ -30,7 +30,18 @@ Sau buổi này, máy bạn phải có đủ công cụ để học toàn bộ p
 
 ## 📚 Lý thuyết tóm tắt
 
-- **AWS CLI v2** là CLI chính thức để gọi API AWS từ máy local. Terraform AWS provider đọc credential từ chuỗi mặc định: env var → `~/.aws/credentials` → IAM Role (nếu chạy trên EC2).
+- **AWS CLI v2** là CLI chính thức để gọi API AWS từ máy local. Sau khi `aws configure`, 2 file được tạo:
+  - **`~/.aws/credentials`** — chứa **Access Key ID + Secret Access Key** (key bí mật).
+  - **`~/.aws/config`** — chứa **region, output format, profile config, role assumption** (không phải secret).
+  - Tách 2 file để có thể commit `config` vào dotfile/sync máy nhưng KHÔNG bao giờ commit `credentials`.
+- **Chuỗi tìm credential** của Terraform AWS provider (theo thứ tự ưu tiên):
+  1. Env var: `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` (+ optionally `AWS_SESSION_TOKEN`).
+  2. Provider config block: `profile = "..."` hoặc `assume_role` trong file `.tf`.
+  3. Shared credentials file: `~/.aws/credentials` (profile theo `AWS_PROFILE` env var, mặc định `default`).
+  4. Shared config file: `~/.aws/config` (cho assume role, SSO).
+  5. Container credentials: `ECS_CONTAINER_METADATA_URI` (khi chạy trong ECS).
+  6. EC2 Instance Profile / IAM Role: tự động khi Terraform chạy trên EC2/Lambda có gắn role.
+- **Profile**: nhóm credentials có tên trong `~/.aws/credentials`. Switch giữa account/role bằng `aws configure --profile work` rồi gọi `aws s3 ls --profile work`, hoặc set `export AWS_PROFILE=work`.
 - **Terraform** là binary đơn lẻ, không cần runtime. Chỉ cần download và để vào `PATH`.
 - **IAM user vs root**: root có toàn quyền billing và không thể bị giới hạn — TUYỆT ĐỐI không tạo access key cho root. Tạo IAM user riêng để dùng hằng ngày.
 - **Budget Alert** không chặn chi phí, chỉ gửi email cảnh báo khi vượt ngưỡng. Đặt $5 để biết sớm nếu quên xoá NAT Gateway / RDS.

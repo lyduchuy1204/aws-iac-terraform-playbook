@@ -85,6 +85,10 @@ SNS Topic ──email──▶ Inbox của bạn
 
 > **Tiền đề**: Bạn đã hoàn thành Project 1 (buổi 10–13) hoặc có 1 EC2 đang chạy để gắn alarm vào.
 
+> 📌 **Tiền đề**: Buổi này cần 1 EC2 instance đang chạy để gắn alarm vào.
+> - Nếu bạn vừa hoàn thành Project 1 (B10–B13) và **chưa destroy**: dùng instance đó.
+> - Nếu **đã destroy** Project 1 để tiết kiệm cost: cần `apply` lại B10 (Network) + B11 (Compute) trước, sau đó lấy Instance ID. Hoặc tự tạo 1 EC2 t3.micro trên Console (free tier).
+
 ### Bước 1 — Chuẩn bị input
 Lấy **Instance ID** EC2 đang chạy:
 ```bash
@@ -134,6 +138,14 @@ dd if=/dev/zero of=/dev/null &
 > 📌 **Lưu ý về Log Group**: Buổi 14 tạo Log Group rỗng (chưa có log stream). Đó là **kỳ vọng** — vì user-data buổi 11 chỉ cài nginx, CHƯA cài CloudWatch Agent. Nếu muốn EC2 thật sự đẩy log lên Log Group, xem mục mở rộng dưới.
 
 ### 📦 (Mở rộng) Cài CloudWatch Agent qua user-data
+
+> ⚠️ **Đây là bước NÂNG CAO** — không bắt buộc cho buổi 14. Bao gồm:
+> 1. Sửa `user_data.sh` của module B11.
+> 2. Re-`apply` B11 (instance cũ KHÔNG tự nhận user-data mới — phải **terminate** thủ công hoặc dùng "Instance Refresh" của ASG).
+> 3. Sửa IAM Role B11, attach thêm policy `CloudWatchAgentServerPolicy`.
+> 4. Re-`apply` B14 nếu Log Group name khác.
+>
+> Nếu bạn mới làm B14 lần đầu, có thể **bỏ qua section này** và quay lại sau khi đã quen Project 1. Mục tiêu chính của B14 là alarm + SNS, KHÔNG phải log shipping.
 
 Sửa `user_data.sh` của Launch Template buổi 11, thêm:
 

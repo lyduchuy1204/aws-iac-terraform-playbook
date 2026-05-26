@@ -135,12 +135,21 @@ terraform apply
 Apply mất ~5-10 phút (RDS lâu).
 
 ### Bước 3 — Verify state KHÔNG plain text password
+
+**Linux/macOS / Git Bash**:
 ```bash
-terraform state pull > /tmp/state.json
-grep -i "password" /tmp/state.json
+terraform state pull > state-check.json
+grep -i "password" state-check.json
 # Password vẫn có trong state nhưng trong field "sensitive_attributes" hoặc encrypted nếu bucket encrypt.
 # Quan trọng: KHÔNG được thấy password ở STDOUT khi `terraform apply`.
-rm /tmp/state.json
+rm state-check.json
+```
+
+**Windows PowerShell**:
+```powershell
+terraform state pull | Out-File -Encoding utf8 state-check.json
+Select-String -Path state-check.json -Pattern "password" -SimpleMatch
+Remove-Item state-check.json
 ```
 
 ### Bước 4 — Verify Secrets Manager

@@ -101,10 +101,19 @@ Mở `envs/dev/terraform.tfvars.example`, điền:
 - `vpc_id` từ output buổi 10.
 - `private_subnet_ids` từ output buổi 10.
 
+**Linux/macOS / Git Bash trên Windows**:
 ```bash
 cp envs/dev/terraform.tfvars.example envs/dev/terraform.tfvars
 # chỉnh giá trị trong terraform.tfvars
 ```
+
+**Windows PowerShell**:
+```powershell
+Copy-Item envs\dev\terraform.tfvars.example envs\dev\terraform.tfvars
+# Mở bằng VS Code: code envs\dev\terraform.tfvars
+```
+
+> ⚠️ **SG placeholder ở buổi này là tạm thời**: Security Group EC2 hiện mở port 80 từ `var.vpc_cidr` (toàn bộ VPC) để dev tự test được. **Buổi 13 sẽ siết lại** chỉ chấp nhận traffic từ ALB SG. KHÔNG copy phong cách "mở từ VPC CIDR" này sang prod — nó là "mở quá rộng" theo chuẩn least privilege.
 
 ### Bước 3 — Apply
 ```bash

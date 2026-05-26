@@ -138,6 +138,22 @@ terraform apply
 
 #### Test PUT item:
 
+> ⚠️ **Lưu ý escape JSON-trong-JSON**:
+> Payload có `body` là string JSON nằm bên trong JSON khác → cần escape `"` thành `\"`.
+>
+> **Bash/zsh** (Linux/macOS): dùng single quote bao ngoài như ví dụ dưới — chạy được.
+>
+> **PowerShell** (Windows): single quote trong PowerShell KHÔNG escape — dùng cách thay thế:
+> ```powershell
+> # Cách 1: dùng file payload thay vì inline
+> @'
+> {"httpMethod":"POST","body":"{\"id\":\"1\",\"name\":\"Coffee\",\"price\":35000}"}
+> '@ | Set-Content -Encoding utf8 payload.json
+> aws lambda invoke --function-name (terraform output -raw lambda_function_name) `
+>   --cli-binary-format raw-in-base64-out --payload file://payload.json response.json
+> ```
+> Lỗi điển hình khi escape sai: `Unexpected token in JSON at position 0` — Lambda nhận được string không parse được thành JSON.
+
 ```bash
 aws lambda invoke \
   --function-name $(terraform output -raw lambda_function_name) \

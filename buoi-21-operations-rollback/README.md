@@ -351,6 +351,7 @@ Càng quan trọng càng dùng nhiều tầng. Học sinh: ≥ 3 tầng cho RDS,
 | `Sid` | Vai trò |
 |---|---|
 | `ReadOnlyForPlanning` | `Describe*`/`Get*`/`List*` rộng để `terraform plan` đọc state cloud — read-only nên rộng cũng OK. |
+| `ManageTerraformStateBucket` | Đọc/ghi đúng bucket lưu state (S3 native locking ở B06). KHÔNG cấp `s3:*` toàn account → runner không đọc được state của project khác. |
 | `ManageNetworking` | Write VPC/Subnet/RouteTable/SG, gắn condition `aws:RequestedRegion`. |
 | `ManageCompute` | Write EC2/ASG/Launch Template, cùng condition region. |
 | `ManageRDS` | Write RDS (create/modify/delete DB instance, subnet/parameter group), cùng condition region. |
@@ -386,7 +387,7 @@ radius control rẻ tiền nhất mà hiệu quả.
      `PROD-ACCOUNT-ID`, prefix bucket cho khớp).
   3. Role được **assume qua OIDC** từ GitHub Actions — KHÔNG có long-lived
      access key, mỗi run sinh credential tạm 1h. Cách setup OIDC ở
-     [Buổi 20 — CI/CD](../buoi-20-cicd-pipeline/README.md).
+     [Buổi 20 — CI/CD](../buoi-20-project2-cicd/README.md).
   4. Khi sinh resource mới (ví dụ ElastiCache lần đầu): bổ sung `Sid` mới
      trong policy, PR review, apply riêng — chấp nhận trade-off đổi sự an
      toàn lấy 5 phút thêm policy.
@@ -500,6 +501,10 @@ Có action `infracost/actions/setup` + `infracost/actions/comment` để tự co
 6. MFA Delete có thể enable bằng Terraform không? Vì sao?
 7. `import` block (TF 1.5+) khác lệnh `terraform import` ở điểm nào?
 8. `infracost breakdown` đọc từ đâu? Có cần `terraform apply` trước không?
+9. Vì sao runner ở prod KHÔNG nên dùng `AdministratorAccess`? Nêu 3 lý do cụ thể.
+10. Condition `aws:RequestedRegion` trong policy có tác dụng gì? Nếu bỏ điều kiện này, attacker leak được key có thể làm gì?
+11. Vì sao policy `iam-policy-terraform-runner.json` cần `Sid` `DenyDangerousActions` riêng dù các `Sid` khác đã không cho phép `iam:CreateUser`? (Gợi ý: ưu tiên Deny vs Allow trong IAM evaluation.)
+12. Resource global (IAM Role, CloudFront, Route53) không có region — condition `aws:RequestedRegion` có hiệu lực không? Bạn bảo vệ chúng bằng cách nào?
 
 ---
 
