@@ -1,0 +1,13 @@
+# Copy thành terraform.tfvars, KHÔNG commit.
+
+region  = "ap-southeast-1"
+project = "iac-playbook"
+env     = "dev"
+
+# Lấy từ output buổi 10
+vpc_id             = "vpc-0123456789abcdef0"
+private_subnet_ids = ["subnet-aaaa", "subnet-bbbb"]
+
+# Lấy từ output buổi 11
+ec2_security_group_id = "sg-0123456789abcdef0"
+iam_role_name         = "iac-playbook-dev-ec2-role"

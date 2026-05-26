@@ -1,0 +1,48 @@
+# =============================================================================
+# .gitignore chuẩn cho repo Terraform
+# Copy file này về root repo của team.
+# =============================================================================
+
+# --- Local Terraform working dir (bao gồm provider plugins đã download) ---
+**/.terraform/*
+
+# --- State files: TUYỆT ĐỐI KHÔNG commit (chứa secret, password, token) ---
+*.tfstate
+*.tfstate.*
+*.tfstate.*.backup
+
+# --- Crash logs ---
+crash.log
+crash.*.log
+
+# --- tfvars: thường chứa secret, password, instance ID nội bộ ---
+# Nếu cần share giá trị mẫu, dùng file *.tfvars.example
+*.tfvars
+*.tfvars.json
+
+# --- CLI config files có thể chứa credentials ---
+.terraformrc
+terraform.rc
+
+# --- Override files (dùng cho local dev, không nên commit) ---
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# --- Plan output files (binary, có thể chứa secret) ---
+*.tfplan
+*.tfplan.*
+
+# --- Editor / OS rác ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# QUAN TRỌNG: KHÔNG ignore .terraform.lock.hcl !
+# Lock file PHẢI commit để team dùng đúng version provider.
+# (Đó là lý do KHÔNG có dòng "*.lock.hcl" hay ".terraform.lock.hcl" ở đây.)
+# =============================================================================

@@ -1,0 +1,108 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - "**.tf"
+      - "**.tfvars"
+      - ".github/workflows/terraform-*.yml"
+
+permissions:
+  id-token: write       # bắt buộc để xin OIDC token
+  contents: read        # checkout
+  pull-requests: write  # comment plan vào PR
+
+env:
+  TF_WORKING_DIR: envs/dev   # đổi theo cấu trúc repo thật
+
+jobs:
+  plan:
+    name: terraform plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: gha-plan-${{ github.run_id }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.4
+          terraform_wrapper: false
+
+      - name: Terraform fmt check
+        id: fmt
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Terraform init
+        id: init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -no-color
+
+      - name: Terraform validate
+        id: validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        id: plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          set +e
+          terraform plan -no-color -input=false -out=tfplan 2>&1 | tee plan.txt
+          echo "exitcode=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: Comment plan on PR
+        uses: actions/github-script@v7
+        if: always()
+        env:
+          PLAN_EXIT: ${{ steps.plan.outputs.exitcode }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = `${process.env.TF_WORKING_DIR || 'envs/dev'}/plan.txt`;
+            let plan = '';
+            try { plan = fs.readFileSync(path, 'utf8'); } catch (e) { plan = '(không đọc được plan.txt)'; }
+            // Truncate để tránh vượt giới hạn body comment (~65k ký tự).
+            const MAX = 60000;
+            if (plan.length > MAX) plan = plan.slice(0, MAX) + '\n... (truncated)';
+            const fmt = '${{ steps.fmt.outcome }}';
+            const init = '${{ steps.init.outcome }}';
+            const validate = '${{ steps.validate.outcome }}';
+            const exitCode = process.env.PLAN_EXIT || 'unknown';
+            const body = [
+              '### 🟦 Terraform Plan',
+              '',
+              `- fmt: \`${fmt}\``,
+              `- init: \`${init}\``,
+              `- validate: \`${validate}\``,
+              `- plan exit code: \`${exitCode}\``,
+              '',
+              '<details><summary>📋 Plan output</summary>',
+              '',
+              '```diff',
+              plan,
+              '```',
+              '',
+              '</details>',
+            ].join('\n');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Fail if plan errored
+        if: steps.plan.outputs.exitcode != '0' && steps.plan.outputs.exitcode != '2'
+        run: |
+          echo "Plan thất bại (exit ${{ steps.plan.outputs.exitcode }})"
+          exit 1

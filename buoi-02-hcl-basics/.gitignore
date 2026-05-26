@@ -1,0 +1,27 @@
+# --- Terraform local cache (KHÔNG commit) ---
+# Folder chứa provider plugin được tải về sau `terraform init`.
+.terraform/
+.terraform.tfstate.lock.info
+
+# --- State files (NHẠY CẢM, KHÔNG commit) ---
+# Có thể chứa secret ở plain text. Lưu trên S3 backend ở các buổi sau.
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# --- File output do file resource trong demo này tạo ra ---
+hello.txt
+
+# --- Crash log ---
+crash.log
+crash.*.log
+
+# --- File chứa giá trị nhạy cảm (KHÔNG commit) ---
+# tfvars có thể chứa password, key. Chỉ commit file *.example.
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# --- LƯU Ý QUAN TRỌNG ---
+# .terraform.lock.hcl PHẢI được commit vào Git (KHÔNG ignore).
+# Nó pin chính xác phiên bản provider để team dùng đồng nhất.

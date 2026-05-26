@@ -1,0 +1,31 @@
+# Local Terraform working dir
+**/.terraform/*
+
+# State files — KHÔNG commit
+*.tfstate
+*.tfstate.*
+*.tfstate.*.backup
+
+# Crash logs
+crash.log
+crash.*.log
+
+# tfvars có thể chứa giá trị nhạy cảm
+*.tfvars
+*.tfvars.json
+
+# Plan output
+*.tfplan
+*.tfplan.*
+
+# CLI rc
+.terraformrc
+terraform.rc
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# QUAN TRỌNG: KHÔNG ignore .terraform.lock.hcl (phải commit để team đồng bộ version)

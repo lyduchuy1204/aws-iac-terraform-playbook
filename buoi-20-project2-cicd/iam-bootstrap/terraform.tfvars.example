@@ -1,0 +1,4 @@
+# Copy thành terraform.tfvars (KHÔNG commit) và chỉnh giá trị.
+region      = "ap-southeast-1"
+github_repo = "your-org/your-repo"   # ví dụ: "lyduc/aws-iac-terraform-playbook"
+role_name   = "github-actions-deployer"

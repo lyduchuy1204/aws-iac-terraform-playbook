@@ -1,0 +1,26 @@
+# =====================================================================
+# Mẫu file terraform.tfvars
+# COPY file này thành `terraform.tfvars` rồi sửa giá trị thật.
+# KHÔNG commit `terraform.tfvars` vào Git (đã có trong .gitignore).
+# =====================================================================
+
+# Region triển khai
+aws_region = "ap-southeast-1"
+
+# Prefix bucket — đổi thành prefix unique của bạn (ví dụ tên + dự án).
+bucket_name_prefix = "lyduc-demo"
+
+# Môi trường: dev / staging / prod / learning
+environment = "learning"
+
+# Người sở hữu (dùng cho tag, cost allocation)
+owner = "lyduc"
+
+# Tag bổ sung (optional)
+extra_tags = {
+  CostCenter = "training"
+  Course     = "iac-terraform-playbook"
+}
+
+# Bật S3 versioning (khuyến nghị true)
+enable_versioning = true

@@ -1,0 +1,20 @@
+# --- Terraform local cache (KHÔNG commit) ---
+.terraform/
+.terraform.tfstate.lock.info
+
+# --- State files (NHẠY CẢM, KHÔNG commit) ---
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# --- Crash log ---
+crash.log
+crash.*.log
+
+# --- File chứa giá trị nhạy cảm (KHÔNG commit) ---
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# --- LƯU Ý ---
+# .terraform.lock.hcl PHẢI được commit. Không thêm vào đây.

@@ -1,0 +1,16 @@
+# Terraform local state, plan files
+.terraform/
+.terraform.lock.hcl.backup
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# tfvars chứa secret
+*.tfvars
+!*.tfvars.example
+
+# OS
+.DS_Store
+Thumbs.db

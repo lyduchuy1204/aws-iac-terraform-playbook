@@ -1,0 +1,6 @@
+# Copy file này thành terraform.tfvars rồi điền giá trị thực.
+# KHÔNG commit terraform.tfvars vào Git.
+
+region        = "ap-southeast-1"
+project       = "iac-playbook"
+bucket_suffix = "abc123" # đổi sang chuỗi unique của bạn

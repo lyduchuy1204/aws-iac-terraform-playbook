@@ -1,0 +1,12 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+state-backup-*.tfstate
+state-pull-*.tfstate
+rollback.tfplan
+*.tfplan
+infracost-*.json

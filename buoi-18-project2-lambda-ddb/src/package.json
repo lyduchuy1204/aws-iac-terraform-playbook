@@ -1,0 +1,14 @@
+{
+  "name": "lambda-ddb-handler",
+  "version": "1.0.0",
+  "description": "Project 2 - Lambda CRUD DynamoDB (buổi 18)",
+  "main": "handler.js",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.668.0",
+    "@aws-sdk/lib-dynamodb": "^3.668.0"
+  }
+}

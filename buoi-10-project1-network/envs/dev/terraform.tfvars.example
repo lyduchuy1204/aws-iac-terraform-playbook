@@ -1,0 +1,6 @@
+# Copy thành terraform.tfvars rồi điền giá trị thực, KHÔNG commit.
+
+region  = "ap-southeast-1"
+project = "iac-playbook"
+env     = "dev"
+azs     = ["ap-southeast-1a", "ap-southeast-1b"]

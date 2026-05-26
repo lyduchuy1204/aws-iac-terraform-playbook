@@ -1,0 +1,5 @@
+# Copy thành terraform.tfvars, điền giá trị thực, KHÔNG commit.
+
+region        = "ap-southeast-1"
+project       = "iac-playbook"
+bucket_suffix = "xyz789" # khác dev

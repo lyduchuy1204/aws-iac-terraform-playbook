@@ -1,0 +1,10 @@
+# Copy thành terraform.tfvars, KHÔNG commit.
+# Lấy giá trị vpc_id, private_subnet_ids từ output buổi 10.
+
+region  = "ap-southeast-1"
+project = "iac-playbook"
+env     = "dev"
+
+vpc_id             = "vpc-0123456789abcdef0"
+vpc_cidr           = "10.0.0.0/16"
+private_subnet_ids = ["subnet-aaaa", "subnet-bbbb"]

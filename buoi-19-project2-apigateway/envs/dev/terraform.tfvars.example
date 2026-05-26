@@ -1,0 +1,6 @@
+# Copy thành terraform.tfvars (KHÔNG commit) và chỉnh giá trị.
+region              = "ap-southeast-1"
+api_name            = "items-api-dev"
+stage_name          = "dev"
+lambda_state_bucket = "REPLACE-ME-tfstate-<account-id>"
+lambda_state_key    = "buoi-18-project2-lambda-ddb/dev/terraform.tfstate"
